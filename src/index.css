@@ -1,0 +1,53 @@
+/* Reset margins and paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set global font and smooth text */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+/* Links global */
+a {
+  color: #6366f1;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Inputs and selects default */
+input, select, textarea, button {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* Utility classes for responsive container */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Responsive media queries */
+
+/* Tablet */
+@media (min-width: 768px) {
+  .container {
+    width: 85%;
+  }
+}
+
+/* Laptop */
+@media (min-width: 1024px) {
+  .container {
+    width: 80%;
+  }
+}

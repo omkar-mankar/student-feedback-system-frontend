@@ -1,0 +1,75 @@
+/* Centering all pages */
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #6366f1, #a78bfa, #f472b6);
+}
+
+/* Make all cards responsive */
+.app-container > div {
+  width: 100%;
+  max-width: 450px;
+  padding: 40px;
+  border-radius: 20px;
+  background-color: #fff;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+/* Mobile-first input/button styles */
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #6366f1, #a78bfa);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(99,102,241,0.3);
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Footer links */
+footer a {
+  color: #6366f1;
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) {
+  .app-container > div {
+    padding: 50px;
+  }
+}
+
+/* Laptop adjustments */
+@media (min-width: 1024px) {
+  .app-container > div {
+    padding: 60px;
+  }
+}
