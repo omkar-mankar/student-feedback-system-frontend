@@ -7,7 +7,9 @@
 
 /* Set global font and smooth text */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
   background-color: #f0f2f5;
   color: #333;
 }
@@ -24,7 +26,10 @@ a:hover {
 }
 
 /* Inputs and selects default */
-input, select, textarea, button {
+input,
+select,
+textarea,
+button {
   font-family: inherit;
   font-size: 1rem;
 }

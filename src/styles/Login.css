@@ -1,33 +1,25 @@
-/* Use same style as register for consistency */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #6366f1, #a78bfa, #f472b6);
-  font-family: Arial, sans-serif;
+  background-color: #f5f7fa;
 }
 
 .login-card {
-  background-color: #fff;
+  background-color: #ffffff;
   padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 90%;
   max-width: 400px;
   text-align: center;
-  animation: fadeIn 0.5s ease-out;
 }
 
 .login-card h2 {
-  font-size: 28px;
-  margin-bottom: 10px;
-}
-
-.login-card p {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 25px;
+  font-size: 26px;
+  color: #1e3a8a;
+  margin-bottom: 20px;
 }
 
 .login-card form {
@@ -38,62 +30,50 @@
 
 .login-card label {
   text-align: left;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 14px;
-  margin-bottom: 5px;
 }
 
 .login-card input,
 .login-card select {
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .login-card input:focus,
 .login-card select:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 5px rgba(99,102,241,0.5);
+  border-color: #2563eb;
+  box-shadow: 0 0 4px rgba(37, 99, 235, 0.4);
 }
 
 .login-card button {
   padding: 12px;
   border: none;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #6366f1, #a78bfa);
+  border-radius: 8px;
+  background-color: #2563eb;
   color: white;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s;
 }
 
 .login-card button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(99,102,241,0.3);
+  background-color: #1e3a8a;
 }
 
-.login-card button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.login-card .footer {
+.footer {
   margin-top: 20px;
   font-size: 14px;
 }
-
-.login-card .footer a {
-  color: #6366f1;
+.footer a {
+  color: #2563eb;
   text-decoration: none;
 }
-
-.login-card .footer a:hover {
+.footer a:hover {
   text-decoration: underline;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px);}
-  to { opacity: 1; transform: translateY(0);}
 }
