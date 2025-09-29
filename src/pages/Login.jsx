@@ -25,7 +25,7 @@ function Login() {
       if (res.data.role === "admin") {
         window.location.href = "/admin-dashboard";
       } else {
-        window.location.href = "/student-dashboard";
+        window.location.href = "/http://127.0.0.1:5000/feedback";
       }
     } catch (err) {
       alert(err.response?.data?.error || "Login failed!");

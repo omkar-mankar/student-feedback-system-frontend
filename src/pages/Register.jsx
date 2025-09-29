@@ -37,11 +37,11 @@ function Register() {
           <label>Password</label>
           <input type="password" name="password" value={form.password} onChange={handleChange} required />
 
-          <label>Role</label>
+          {/* <label>Role</label>
           <select name="role" value={form.role} onChange={handleChange}>
             <option value="student">Student</option>
             <option value="admin">Admin</option>
-          </select>
+          </select> */}
 
           <button type="submit">Register</button>
         </form>

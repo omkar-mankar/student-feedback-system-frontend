@@ -1,0 +1,72 @@
+/* Feedback.css */
+.feedback-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg,#6366f1,#a78bfa,#f472b6);
+    font-family: Arial, sans-serif;
+  }
+  
+  .feedback-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  label {
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  input, textarea {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+  
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 5px rgba(99,102,241,0.5);
+  }
+  
+  button {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg,#6366f1,#a78bfa);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(99,102,241,0.3);
+  }
+  
+  /* Responsive for mobile */
+  @media (max-width: 500px) {
+    .feedback-card {
+      padding: 20px;
+    }
+    input, textarea {
+      font-size: 12px;
+    }
+    button {
+      padding: 10px;
+    }
+  }
+  
