@@ -9,6 +9,8 @@ import Login from './pages/Login'
 import Feedback from './pages/StudentFeedback'
 import Home from './pages/Home'
 import Navbar from './components/Navbar'
+import AdminDashboard from "./pages/AdminDashboard";
+
 
 function App() {
   const PrivateRoute = ({ children }) => {
@@ -49,7 +51,7 @@ function App() {
             path='/admin-dashboard'
             element={
               <PrivateRoute>
-                <div>Admin Dashboard</div>
+                <AdminDashboard/>
               </PrivateRoute>
             }
           />

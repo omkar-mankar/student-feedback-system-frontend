@@ -59,11 +59,11 @@ function Register() {
           />
 
           {/* Optional role selector, hidden for students */}
-          {/* <label>Role</label>
+          <label>Role</label>
           <select name="role" value={form.role} onChange={handleChange}>
             <option value="student">Student</option>
             <option value="admin">Admin</option>
-          </select> */}
+          </select> 
 
           <button type='submit'>Register</button>
         </form>

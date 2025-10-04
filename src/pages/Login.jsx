@@ -16,7 +16,7 @@ function Login() {
       localStorage.setItem('role', res.data.role)
       alert(res.data.message)
       if (res.data.role === 'admin') {
-        window.location.href = '/admin-dashboard'
+        window.location.href = '/AdminDashboard.jsx'
       } else {
         window.location.href = '/feedback'
       }

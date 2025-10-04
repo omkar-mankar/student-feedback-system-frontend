@@ -3,77 +3,105 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4ebf5 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .login-card {
   background-color: #ffffff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 45px 35px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
   width: 90%;
-  max-width: 400px;
+  max-width: 420px;
   text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.login-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18), 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .login-card h2 {
-  font-size: 26px;
+  font-size: 28px;
   color: #1e3a8a;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  letter-spacing: 0.5px;
 }
 
 .login-card form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
 }
 
 .login-card label {
   text-align: left;
   font-weight: 600;
   font-size: 14px;
+  color: #334155;
 }
 
 .login-card input,
 .login-card select {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
   font-size: 14px;
   width: 100%;
   box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .login-card input:focus,
 .login-card select:focus {
   outline: none;
   border-color: #2563eb;
-  box-shadow: 0 0 4px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.45);
 }
 
 .login-card button {
-  padding: 12px;
+  padding: 14px;
   border: none;
-  border-radius: 8px;
-  background-color: #2563eb;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2563eb, #1e3a8a);
   color: white;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 15px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background 0.4s, transform 0.2s;
 }
 
 .login-card button:hover:not(:disabled) {
-  background-color: #1e3a8a;
+  background: linear-gradient(135deg, #1e3a8a, #15306d);
+  transform: translateY(-2px);
+}
+
+.login-card button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 10px;
+  font-weight: 600;
 }
 
 .footer {
-  margin-top: 20px;
+  margin-top: 22px;
   font-size: 14px;
+  color: #475569;
 }
 .footer a {
   color: #2563eb;
   text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
 }
 .footer a:hover {
+  color: #1e3a8a;
   text-decoration: underline;
 }
+

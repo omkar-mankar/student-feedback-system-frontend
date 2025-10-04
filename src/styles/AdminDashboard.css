@@ -1,0 +1,55 @@
+.admin-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px 40px;
+    background: #f5f7ff;
+    border-radius: 15px;
+    box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .admin-container h2 {
+    text-align: center;
+    color: #1a1a1a;
+    margin-bottom: 25px;
+  }
+  
+  .logout-btn {
+    float: right;
+    padding: 10px 18px;
+    margin-bottom: 20px;
+    background: #ff4b5c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .logout-btn:hover {
+    background: #e8434d;
+    transform: translateY(-2px);
+  }
+  
+  section {
+    margin-bottom: 25px;
+  }
+  
+  section h3 {
+    color: #007bff;
+    margin-bottom: 10px;
+  }
+  
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  ul li {
+    background: #fff;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.05);
+  }
+  
