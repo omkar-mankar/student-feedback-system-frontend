@@ -1,42 +1,84 @@
-// src/pages/AdminDashboard.jsx
 import React, { useEffect, useState } from 'react'
+import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa'
 import '../styles/AdminDashboard.css'
 
 function AdminDashboard() {
   const [students, setStudents] = useState([])
   const [courses, setCourses] = useState([])
-  const [selectedStudent, setSelectedStudent] = useState(null)
-  const [selectedCourses, setSelectedCourses] = useState([])
+  const [feedbacks, setFeedbacks] = useState([])
+  const [selectedTab, setSelectedTab] = useState('students') // students / courses / feedback
+
+  const [newCourse, setNewCourse] = useState({
+    course_name: '',
+    instructor: '',
+    semester: '',
+    description: '',
+  })
+  const [editingCourseId, setEditingCourseId] = useState(null)
+
   const token = localStorage.getItem('token')
 
-  // Fetch students and courses
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/students', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => setStudents(data))
-      .catch((err) => console.log(err))
+    fetchStudents()
+    fetchCourses()
+    if (selectedTab === 'feedback') fetchAllFeedbacks()
+  }, [selectedTab])
 
-    fetch('http://127.0.0.1:5000/courses', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => setCourses(data))
-      .catch((err) => console.log(err))
-  }, [token])
+  // -------------------------
+  // Fetch Data
+  // -------------------------
+  const fetchStudents = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:5000/students', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await res.json()
+      setStudents(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
-  // Select a student
+  const fetchCourses = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:5000/courses', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await res.json()
+      setCourses(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  // -------------------------
+  // Feedback Logic (All Feedbacks)
+  // -------------------------
+  const fetchAllFeedbacks = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:5000/feedback/all', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await res.json()
+      setFeedbacks(data)
+    } catch (err) {
+      console.error(err)
+      setFeedbacks([])
+    }
+  }
+
+  // -------------------------
+  // Student Assignment Logic
+  // -------------------------
+  const [selectedStudent, setSelectedStudent] = useState(null)
+  const [selectedCourses, setSelectedCourses] = useState([])
+
   const handleStudentSelect = (student) => {
     setSelectedStudent(student)
-
-    // Normalize student.courses to array of strings (course IDs)
-    const assignedIds =
-      student.courses?.map((c) => (typeof c === 'string' ? c : c._id)) || []
+    const assignedIds = student.courses?.map((c) => c._id) || []
     setSelectedCourses(assignedIds)
   }
 
-  // Toggle course selection
   const handleCourseToggle = (courseId) => {
     if (selectedCourses.includes(courseId)) {
       setSelectedCourses(selectedCourses.filter((id) => id !== courseId))
@@ -45,7 +87,6 @@ function AdminDashboard() {
     }
   }
 
-  // Assign courses
   const handleAssignCourses = async () => {
     if (!selectedStudent) return
     try {
@@ -62,91 +103,260 @@ function AdminDashboard() {
       )
       const data = await res.json()
       alert(data.message)
-
-      // Refresh students
-      const updatedStudents = await fetch('http://127.0.0.1:5000/students', {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then((res) => res.json())
-      setStudents(updatedStudents)
-
-      // Refresh selected student
-      const refreshedStudent = updatedStudents.find(
+      fetchStudents()
+      const refreshedStudent = students.find(
         (s) => s._id === selectedStudent._id
       )
       setSelectedStudent(refreshedStudent)
-      const refreshedAssignedIds =
-        refreshedStudent.courses?.map((c) =>
-          typeof c === 'string' ? c : c._id
-        ) || []
-      setSelectedCourses(refreshedAssignedIds)
+      setSelectedCourses(refreshedStudent?.courses?.map((c) => c._id) || [])
     } catch (err) {
       console.error(err)
       alert('Failed to assign courses')
     }
   }
 
+  // -------------------------
+  // Course Management Logic
+  // -------------------------
+  const handleCourseChange = (e) => {
+    setNewCourse({ ...newCourse, [e.target.name]: e.target.value })
+  }
+
+  const handleAddOrEditCourse = async () => {
+    const { course_name, semester } = newCourse
+    if (!course_name || !semester) {
+      alert('Course name and semester are required!')
+      return
+    }
+
+    try {
+      const url = editingCourseId
+        ? `http://127.0.0.1:5000/courses/${editingCourseId}`
+        : 'http://127.0.0.1:5000/courses'
+      const method = editingCourseId ? 'PATCH' : 'POST'
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newCourse),
+      })
+      const data = await res.json()
+      alert(data.message)
+      setNewCourse({
+        course_name: '',
+        instructor: '',
+        semester: '',
+        description: '',
+      })
+      setEditingCourseId(null)
+      fetchCourses()
+    } catch (err) {
+      console.error(err)
+      alert('Failed to save course')
+    }
+  }
+
+  const handleEditCourse = (course) => {
+    setNewCourse(course)
+    setEditingCourseId(course._id)
+  }
+
+  const handleDeleteCourse = async (courseId) => {
+    if (!window.confirm('Are you sure to delete this course?')) return
+    try {
+      const res = await fetch(`http://127.0.0.1:5000/courses/${courseId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await res.json()
+      alert(data.message)
+      fetchCourses()
+    } catch (err) {
+      console.error(err)
+      alert('Failed to delete course')
+    }
+  }
+
   return (
     <div className='admin-dashboard-container'>
       <h2>Admin Dashboard</h2>
-      <div className='dashboard-layout'>
-        {/* Students Sidebar */}
-        <div className='students-sidebar'>
-          <h3>Students</h3>
-          {students.map((student) => (
-            <div
-              key={student._id}
-              className={`student-card ${
-                selectedStudent?._id === student._id ? 'selected' : ''
-              }`}
-              onClick={() => handleStudentSelect(student)}
-            >
-              {student.username}
-            </div>
-          ))}
+
+      {/* Tabs */}
+      <div className='tabs'>
+        <button
+          className={selectedTab === 'students' ? 'active-tab' : ''}
+          onClick={() => setSelectedTab('students')}
+        >
+          Student Assignment
+        </button>
+        <button
+          className={selectedTab === 'courses' ? 'active-tab' : ''}
+          onClick={() => setSelectedTab('courses')}
+        >
+          Course Management
+        </button>
+        <button
+          className={selectedTab === 'feedback' ? 'active-tab' : ''}
+          onClick={() => setSelectedTab('feedback')}
+        >
+          Feedback
+        </button>
+      </div>
+
+      {/* Student Assignment */}
+      {selectedTab === 'students' && (
+        <div className='dashboard-layout'>
+          <div className='students-sidebar'>
+            <h3>Students</h3>
+            {students.map((student) => (
+              <div
+                key={student._id}
+                className={`student-card ${
+                  selectedStudent?._id === student._id ? 'selected' : ''
+                }`}
+                onClick={() => handleStudentSelect(student)}
+              >
+                {student.username} ({student.courses?.length || 0})
+              </div>
+            ))}
+          </div>
+
+          <div className='center-panel'>
+            {selectedStudent ? (
+              <>
+                <h3>{selectedStudent.username}</h3>
+                <p>Courses Assigned: {selectedStudent.courses?.length || 0}</p>
+                <div className='courses-selection'>
+                  <h4>Select Courses to Assign/Update:</h4>
+                  <div className='courses-list'>
+                    {courses.map((course) => (
+                      <label
+                        key={course._id}
+                        className='course-checkbox'
+                      >
+                        <input
+                          type='checkbox'
+                          checked={selectedCourses.includes(course._id)}
+                          onChange={() => handleCourseToggle(course._id)}
+                        />
+                        {course.course_name} ({course.semester})
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <button
+                  className='assign-btn'
+                  onClick={handleAssignCourses}
+                >
+                  Assign Courses
+                </button>
+              </>
+            ) : (
+              <p>Select a student to view and assign courses</p>
+            )}
+          </div>
         </div>
+      )}
 
-        {/* Center Panel */}
-        <div className='center-panel'>
-          {selectedStudent ? (
-            <>
-              <h3>{selectedStudent.username}</h3>
-              <p>Courses Assigned: {selectedStudent.courses?.length || 0}</p>
+      {/* Course Management */}
+      {selectedTab === 'courses' && (
+        <div className='course-management'>
+          <h3>Manage Courses</h3>
+          <div className='course-form'>
+            <input
+              type='text'
+              name='course_name'
+              placeholder='Course Name'
+              value={newCourse.course_name}
+              onChange={handleCourseChange}
+            />
+            <input
+              type='text'
+              name='semester'
+              placeholder='Semester'
+              value={newCourse.semester}
+              onChange={handleCourseChange}
+            />
+            <input
+              type='text'
+              name='instructor'
+              placeholder='Instructor'
+              value={newCourse.instructor}
+              onChange={handleCourseChange}
+            />
+            <input
+              type='text'
+              name='description'
+              placeholder='Description'
+              value={newCourse.description}
+              onChange={handleCourseChange}
+            />
+            <button onClick={handleAddOrEditCourse}>
+              {editingCourseId ? (
+                <>
+                  <FaEdit /> Update Course
+                </>
+              ) : (
+                <>
+                  <FaPlus /> Add Course
+                </>
+              )}
+            </button>
+          </div>
 
-              <div className='courses-selection'>
-                <h4>Select Courses to Assign/Update:</h4>
-                <div className='courses-list'>
-                  {courses.map((course) => (
-                    <label
-                      key={course._id}
-                      className='course-checkbox'
-                    >
-                      <input
-                        type='checkbox'
-                        checked={selectedCourses.includes(
-                          course._id.toString()
-                        )} // Ensure string comparison
-                        onChange={() =>
-                          handleCourseToggle(course._id.toString())
-                        }
-                      />
-                      {course.course_name} ({course.semester})
-                    </label>
-                  ))}
+          <div className='courses-table'>
+            {courses.map((course) => (
+              <div
+                key={course._id}
+                className='course-row'
+              >
+                <span>{course.course_name}</span>
+                <span>{course.semester}</span>
+                <span>{course.instructor}</span>
+                <span>{course.description}</span>
+                <div className='course-row-actions'>
+                  <button onClick={() => handleEditCourse(course)}>
+                    <FaEdit /> Edit
+                  </button>
+                  <button onClick={() => handleDeleteCourse(course._id)}>
+                    <FaTrash /> Delete
+                  </button>
                 </div>
               </div>
-
-              <button
-                className='assign-btn'
-                onClick={handleAssignCourses}
-              >
-                Assign Courses
-              </button>
-            </>
-          ) : (
-            <p>Select a student to view and assign courses</p>
-          )}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Feedback Management */}
+      {selectedTab === 'feedback' && (
+        <div className='feedback-management'>
+          <div className='feedback-center-panel'>
+            <h3>All Feedbacks</h3>
+            {feedbacks.length > 0 ? (
+              <div className='feedback-list'>
+                {feedbacks.map((fb) => (
+                  <div
+                    key={fb._id}
+                    className='feedback-item'
+                  >
+                    <strong>
+                      {fb.student_name} → {fb.course_name} ({fb.semester})
+                    </strong>
+                    <p>{fb.comment}</p>
+                    <small>Rating: {fb.rating || 'N/A'}</small>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No feedback available yet.</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import '../styles/StudentDashboard.css'
+import StudentFeedback from './StudentFeedback'
 
 function StudentDashboard() {
   const [student, setStudent] = useState(null)
@@ -10,6 +11,7 @@ function StudentDashboard() {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [activeTab, setActiveTab] = useState('courses') // Default tab
 
   const token = localStorage.getItem('token')
 
@@ -21,9 +23,7 @@ function StudentDashboard() {
         const res = await fetch('http://127.0.0.1:5000/students/me', {
           headers: { Authorization: `Bearer ${token}` },
         })
-
         if (!res.ok) throw new Error('Failed to fetch student info')
-
         const data = await res.json()
         setStudent(data)
         setCourses(data?.courses || [])
@@ -75,66 +75,96 @@ function StudentDashboard() {
   }
 
   if (loading)
-    return <div className='dashboard-container'>Loading student data...</div>
+    return (
+      <div className='student-dashboard-container'>Loading student data...</div>
+    )
 
   return (
-    <div className='dashboard-container'>
-      {student && <h2 className='welcome-msg'>Welcome, {student.username}!</h2>}
+    <div className='student-dashboard-container'>
+      {student && <h2>Welcome, {student.username}!</h2>}
 
-      <h3>Your Courses:</h3>
-      {courses.length === 0 ? (
-        <p>No courses assigned yet.</p>
-      ) : (
-        <ul className='course-list'>
-          {courses.map((course) => (
-            <li
-              key={course._id}
-              className={
-                selectedCourse?._id === course._id ? 'active-course' : ''
-              }
-              onClick={() => setSelectedCourse(course)}
-            >
-              <strong>{course.course_name}</strong> – Semester {course.semester}
-            </li>
-          ))}
-        </ul>
+      <div className='student-tabs'>
+        <button
+          className={activeTab === 'courses' ? 'active-tab' : ''}
+          onClick={() => setActiveTab('courses')}
+        >
+          Enrolled Courses
+        </button>
+        <button
+          className={activeTab === 'feedback' ? 'active-tab' : ''}
+          onClick={() => setActiveTab('feedback')}
+        >
+          Feedback
+        </button>
+      </div>
+
+      {activeTab === 'courses' && (
+        <div className='dashboard-layout'>
+          <div className='students-sidebar'>
+            {courses.length === 0 ? (
+              <p>No courses assigned yet.</p>
+            ) : (
+              courses.map((course) => (
+                <div
+                  key={course._id}
+                  className={`student-card ${
+                    selectedCourse?._id === course._id ? 'selected' : ''
+                  }`}
+                  onClick={() => setSelectedCourse(course)}
+                >
+                  <strong>{course.course_name}</strong>
+                  <small>Semester {course.semester}</small>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div className='center-panel'>
+            {selectedCourse ? (
+              <div className='feedback-form-container'>
+                <h3>Feedback for {selectedCourse.course_name}</h3>
+                <form onSubmit={handleSubmit}>
+                  <label>
+                    Rating (1–5):
+                    <input
+                      type='number'
+                      min='1'
+                      max='5'
+                      value={rating}
+                      onChange={(e) => setRating(e.target.value)}
+                      required
+                    />
+                  </label>
+                  <label>
+                    Comment:
+                    <textarea
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder='Share your thoughts about the course...'
+                    />
+                  </label>
+                  <button
+                    type='submit'
+                    className='submit-btn'
+                    disabled={submitting}
+                  >
+                    {submitting ? 'Submitting...' : 'Submit Feedback'}
+                  </button>
+                </form>
+                {message && <p className='feedback-message'>{message}</p>}
+              </div>
+            ) : (
+              <p style={{ textAlign: 'center', marginTop: '2rem' }}>
+                Select a course to give feedback.
+              </p>
+            )}
+          </div>
+        </div>
       )}
 
-      {selectedCourse && (
-        <div className='feedback-form-container'>
-          <h3>Feedback for {selectedCourse.course_name}</h3>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Rating (1–5):
-              <input
-                type='number'
-                min='1'
-                max='5'
-                value={rating}
-                onChange={(e) => setRating(e.target.value)}
-                required
-              />
-            </label>
-
-            <label>
-              Comment:
-              <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder='Share your thoughts about the course...'
-              />
-            </label>
-
-            <button
-              type='submit'
-              className='submit-btn'
-              disabled={submitting}
-            >
-              {submitting ? 'Submitting...' : 'Submit Feedback'}
-            </button>
-          </form>
-
-          {message && <p className='feedback-message'>{message}</p>}
+      {activeTab === 'feedback' && (
+        <div className='feedback-management'>
+          <StudentFeedback />
         </div>
       )}
     </div>
@@ -143,10 +173,9 @@ function StudentDashboard() {
 
 export default StudentDashboard
 
-// /* src\pages\StudentDashboard.jsx */
-
 // import React, { useEffect, useState } from 'react'
-// import './StudentDashboard.css'
+// import '../styles/StudentDashboard.css'
+// import StudentFeedback from './StudentFeedback'
 
 // function StudentDashboard() {
 //   const [student, setStudent] = useState(null)
@@ -155,23 +184,33 @@ export default StudentDashboard
 //   const [rating, setRating] = useState('')
 //   const [comment, setComment] = useState('')
 //   const [message, setMessage] = useState('')
+//   const [loading, setLoading] = useState(true)
+//   const [submitting, setSubmitting] = useState(false)
+//   const [activeTab, setActiveTab] = useState('courses') // Default tab
 
 //   const token = localStorage.getItem('token')
 
 //   // Fetch student info
 //   useEffect(() => {
 //     const fetchStudent = async () => {
-//       const res = await fetch('http://127.0.0.1:5000/students/me', {
-//         headers: { Authorization: `Bearer ${token}` },
-//       })
-//       const data = await res.json()
-//       setStudent(data)
-
-//       if (data?.courses?.length) {
-//         setCourses(data.courses)
+//       try {
+//         setLoading(true)
+//         const res = await fetch('http://127.0.0.1:5000/students/me', {
+//           headers: { Authorization: `Bearer ${token}` },
+//         })
+//         if (!res.ok) throw new Error('Failed to fetch student info')
+//         const data = await res.json()
+//         setStudent(data)
+//         setCourses(data?.courses || [])
+//       } catch (err) {
+//         console.error(err)
+//         setMessage('Error fetching student data. Please log in again.')
+//       } finally {
+//         setLoading(false)
 //       }
 //     }
-//     fetchStudent()
+
+//     if (token) fetchStudent()
 //   }, [token])
 
 //   // Submit feedback
@@ -179,78 +218,137 @@ export default StudentDashboard
 //     e.preventDefault()
 //     if (!selectedCourse) return
 
-//     const res = await fetch('http://127.0.0.1:5000/feedback', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify({
-//         course_id: selectedCourse._id,
-//         rating,
-//         comment,
-//       }),
-//     })
+//     try {
+//       setSubmitting(true)
+//       const res = await fetch('http://127.0.0.1:5000/feedback', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           Authorization: `Bearer ${token}`,
+//         },
+//         body: JSON.stringify({
+//           course_id: selectedCourse._id,
+//           rating: Number(rating),
+//           comment,
+//         }),
+//       })
 
-//     const data = await res.json()
-//     if (res.ok) {
-//       setMessage('Feedback submitted successfully!')
-//       setRating('')
-//       setComment('')
-//     } else {
-//       setMessage(data.error || 'Error submitting feedback')
+//       const data = await res.json()
+//       if (res.ok) {
+//         setMessage('✅ Feedback submitted successfully!')
+//         setRating('')
+//         setComment('')
+//       } else {
+//         setMessage(`❌ ${data.error || 'Error submitting feedback'}`)
+//       }
+//     } catch (err) {
+//       console.error(err)
+//       setMessage('Network error. Please try again.')
+//     } finally {
+//       setSubmitting(false)
 //     }
 //   }
+
+//   if (loading)
+//     return <div className='dashboard-container'>Loading student data...</div>
 
 //   return (
 //     <div className='dashboard-container'>
 //       {student && <h2 className='welcome-msg'>Welcome, {student.username}!</h2>}
 
-//       <h3>Your Courses:</h3>
-//       {courses.length === 0 && <p>No courses assigned yet.</p>}
-//       <ul className='course-list'>
-//         {courses.map((course) => (
-//           <li
-//             key={course._id}
-//             onClick={() => setSelectedCourse(course)}
-//           >
-//             {course.course_name} - {course.semester}
-//           </li>
-//         ))}
-//       </ul>
+//       <div className='student-tabs'>
+//         <button
+//           className={activeTab === 'courses' ? 'active-tab' : ''}
+//           onClick={() => setActiveTab('courses')}
+//         >
+//           Enrolled Courses
+//         </button>
+//         <button
+//           className={activeTab === 'feedback' ? 'active-tab' : ''}
+//           onClick={() => setActiveTab('feedback')}
+//         >
+//           Feedback
+//         </button>
+//       </div>
 
-//       {selectedCourse && (
-//         <div className='feedback-form-container'>
-//           <h3>Feedback for {selectedCourse.course_name}</h3>
-//           <form onSubmit={handleSubmit}>
-//             <label>
-//               Rating (1-5):
-//               <input
-//                 type='number'
-//                 min='1'
-//                 max='5'
-//                 value={rating}
-//                 onChange={(e) => setRating(e.target.value)}
-//                 required
-//               />
-//             </label>
-//             <label>
-//               Comment:
-//               <textarea
-//                 value={comment}
-//                 onChange={(e) => setComment(e.target.value)}
-//               />
-//             </label>
-//             <button
-//               type='submit'
-//               className='submit-btn'
-//             >
-//               Submit Feedback
-//             </button>
-//           </form>
-//           {message && <p className='feedback-message'>{message}</p>}
-//         </div>
-//       )}
+//       <div className='tab-content'>
+//         {activeTab === 'courses' && (
+//           <div className='courses-container'>
+//             <div className='courses-list'>
+//               {courses.length === 0 ? (
+//                 <p>No courses assigned yet.</p>
+//               ) : (
+//                 <ul>
+//                   {courses.map((course) => (
+//                     <li
+//                       key={course._id}
+//                       className={
+//                         selectedCourse?._id === course._id
+//                           ? 'active-course'
+//                           : ''
+//                       }
+//                       onClick={() => setSelectedCourse(course)}
+//                     >
+//                       <strong>{course.course_name}</strong> – Semester{' '}
+//                       {course.semester}
+//                     </li>
+//                   ))}
+//                 </ul>
+//               )}
+//             </div>
+
+//             <div className='feedback-form-side'>
+//               {selectedCourse ? (
+//                 <div className='feedback-form-container'>
+//                   <h3>Feedback for {selectedCourse.course_name}</h3>
+//                   <form onSubmit={handleSubmit}>
+//                     <label>
+//                       Rating (1–5):
+//                       <input
+//                         type='number'
+//                         min='1'
+//                         max='5'
+//                         value={rating}
+//                         onChange={(e) => setRating(e.target.value)}
+//                         required
+//                       />
+//                     </label>
+
+//                     <label>
+//                       Comment:
+//                       <textarea
+//                         value={comment}
+//                         onChange={(e) => setComment(e.target.value)}
+//                         placeholder='Share your thoughts about the course...'
+//                       />
+//                     </label>
+
+//                     <button
+//                       type='submit'
+//                       className='submit-btn'
+//                       disabled={submitting}
+//                     >
+//                       {submitting ? 'Submitting...' : 'Submit Feedback'}
+//                     </button>
+//                   </form>
+
+//                   {message && <p className='feedback-message'>{message}</p>}
+//                 </div>
+//               ) : (
+//                 <p style={{ textAlign: 'center', marginTop: '2rem' }}>
+//                   Select a course to give feedback.
+//                 </p>
+//               )}
+//             </div>
+//           </div>
+//         )}
+
+//         {activeTab === 'feedback' && (
+//           <div className='feedback-cards-container'>
+//             <StudentFeedback />
+//           </div>
+//         )}
+//       </div>
 //     </div>
 //   )
 // }

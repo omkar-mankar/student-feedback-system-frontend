@@ -1,3 +1,4 @@
+/* Admin Dashboard Container */
 .admin-dashboard-container {
   max-width: 1400px;
   margin: 2rem auto;
@@ -11,6 +12,34 @@ h2 {
   margin-bottom: 2rem;
 }
 
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.tabs button {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #2563eb;
+  background-color: white;
+  color: #2563eb;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tabs button.active-tab,
+.tabs button:hover {
+  background-color: #2563eb;
+  color: white;
+}
+
 /* Layout */
 .dashboard-layout {
   display: flex;
@@ -19,7 +48,8 @@ h2 {
 }
 
 /* Students Sidebar */
-.students-sidebar {
+.students-sidebar,
+.feedback-sidebar {
   flex: 0.25;
   min-width: 220px;
   background-color: #f9fafb;
@@ -28,7 +58,8 @@ h2 {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.student-card {
+.student-card,
+.feedback-student-card {
   padding: 0.8rem 1rem;
   margin-bottom: 0.6rem;
   border: 1px solid #cbd5e1;
@@ -37,18 +68,21 @@ h2 {
   transition: background 0.2s, transform 0.2s;
 }
 
-.student-card:hover {
+.student-card:hover,
+.feedback-student-card:hover {
   background-color: #dbeafe;
   transform: translateY(-2px);
 }
 
-.student-card.selected {
+.student-card.selected,
+.feedback-student-card.selected {
   border: 2px solid #2563eb;
   background-color: #eff6ff;
 }
 
 /* Center Panel */
-.center-panel {
+.center-panel,
+.feedback-center-panel {
   flex: 0.7;
   min-width: 500px;
   background-color: #ffffff;
@@ -57,7 +91,8 @@ h2 {
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-.center-panel h3 {
+.center-panel h3,
+.feedback-center-panel h3 {
   color: #1e3a8a;
   margin-bottom: 0.5rem;
 }
@@ -94,12 +129,6 @@ h2 {
   background-color: #f0f4ff;
 }
 
-/* Highlight already assigned courses */
-.course-checkbox.assigned {
-  background-color: #dbeafe; /* light blue background */
-  border: 2px solid #2563eb;
-}
-
 /* Assign Button */
 .assign-btn {
   margin-top: 1.5rem;
@@ -111,6 +140,9 @@ h2 {
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .assign-btn:hover {
@@ -122,15 +154,199 @@ h2 {
   transform: translateY(0);
 }
 
+/* Course Management */
+.course-management {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.course-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.course-form input {
+  flex: 1 1 200px;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+.course-form button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.course-form button:hover {
+  background-color: #1e40af;
+}
+
+/* Course List */
+.courses-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.course-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  flex-wrap: wrap;
+}
+
+.course-row span {
+  flex: 1 1 120px;
+  margin-right: 0.5rem;
+}
+
+.course-row-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.course-row-actions button {
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.course-row-actions button:hover {
+  opacity: 0.85;
+}
+
+.course-row-actions button:first-child {
+  background-color: #facc15;
+  color: white;
+}
+
+.course-row-actions button:last-child {
+  background-color: #ef4444;
+  color: white;
+}
+/* Feedback Management Layout (matches student assignment) */
+.feedback-management {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Feedback Students Sidebar */
+.feedback-sidebar {
+  flex: 0.25;
+  min-width: 220px;
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.feedback-student-card {
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.6rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.feedback-student-card:hover {
+  background-color: #dbeafe;
+  transform: translateY(-2px);
+}
+
+.feedback-student-card.selected {
+  border: 2px solid #2563eb;
+  background-color: #eff6ff;
+}
+
+/* Feedback Center Panel */
+.feedback-center-panel {
+  flex: 0.7;
+  min-width: 500px;
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.feedback-center-panel h3 {
+  color: #1e3a8a;
+  margin-bottom: 1rem;
+}
+
+/* Feedback Items styled like student/course cards */
+.feedback-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.feedback-item {
+  background-color: #ffffff;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.feedback-item:hover {
+  background-color: #dbeafe;
+  transform: translateY(-2px);
+}
+
+.feedback-item strong {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #2563eb;
+  font-size: 0.95rem;
+}
+
+.feedback-item p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.feedback-item small {
+  display: block;
+  margin-top: 0.3rem;
+  color: #555;
+  font-size: 0.85rem;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
-  .dashboard-layout {
+  .dashboard-layout,
+  .feedback-management {
     flex-direction: column;
   }
-  .center-panel {
+  .center-panel,
+  .feedback-center-panel {
     min-width: auto;
   }
-  .students-sidebar {
+  .students-sidebar,
+  .feedback-sidebar {
     flex: 1;
   }
 }
