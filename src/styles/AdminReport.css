@@ -1,0 +1,83 @@
+.report-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  min-height: 80vh;
+  background-color: #f8fafc;
+}
+
+.report-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  width: 100%;
+  padding: 40px 30px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.report-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+}
+
+.report-card h2 {
+  font-size: 1.8rem;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.report-card p {
+  color: #475569;
+  font-size: 1rem;
+  margin-bottom: 30px;
+}
+
+.report-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.report-buttons button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.csv-btn {
+  background-color: #059669;
+  color: white;
+}
+
+.csv-btn:hover {
+  background-color: #047857;
+  transform: translateY(-2px);
+}
+
+.pdf-btn {
+  background-color: #2563eb;
+  color: white;
+}
+
+.pdf-btn:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.icon {
+  font-size: 1.2rem;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

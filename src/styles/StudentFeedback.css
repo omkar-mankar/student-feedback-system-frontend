@@ -1,91 +1,94 @@
-/* src\styles\StudentFeedback.css */
-
-.student-feedback-container {
+.feedback-center-panel {
+  padding: 2rem;
   max-width: 900px;
-  margin: 2rem auto;
-  padding: 1rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0 auto;
 }
 
-.student-feedback-container h2 {
+.feedback-center-panel h3 {
   text-align: center;
-  color: #2563eb;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  color: #2c3e50;
+  font-size: 1.8rem;
+  font-weight: 600;
 }
 
-/* Feedback list layout */
 .feedback-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
-/* Individual feedback card */
+/* Each feedback card */
 .feedback-item {
-  padding: 1rem;
-  border-radius: 12px;
-  border: 1px solid #cbd5e1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color: #ffffff;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s, background 0.2s;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .feedback-item:hover {
-  background-color: #f0f4ff;
   transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
-.feedback-item strong {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #2563eb;
-}
-
-.feedback-item p {
-  margin: 0 0 0.5rem 0;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  color: #1e293b;
-}
-
-.feedback-item small {
-  font-size: 0.85rem;
-  color: #475569;
-  font-weight: 600;
-}
-
-/* Tabs style (shared with dashboard) */
-.tabs {
+/* Left side content */
+.feedback-content {
+  flex: 1;
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: #34495e;
 }
 
-.tabs button {
-  padding: 0.5rem 1rem;
-  border: none;
-  background-color: #e2e8f0;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s;
+.feedback-content strong {
+  font-size: 1.1rem;
+  color: #2c3e50;
 }
 
-.tabs button.active-tab {
-  background-color: #2563eb;
+.feedback-content p {
+  font-size: 0.95rem;
+  color: #555;
+  margin: 0;
+}
+
+.feedback-content small {
+  color: #777;
+  font-size: 0.85rem;
+}
+
+/* Right side (Delete button container) */
+.feedback-actions {
+  margin-left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Delete button */
+.delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #e74c3c; /* professional red tone */
   color: #fff;
+  border: none;
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.tabs button:hover:not(.active-tab) {
-  background-color: #dbeafe;
+.delete-btn:hover {
+  background-color: #c0392b;
+  transform: scale(1.03);
 }
 
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .student-feedback-container {
-    padding: 0 0.5rem;
-  }
-  .tabs {
-    flex-direction: column;
-  }
+.delete-btn svg {
+  width: 16px;
+  height: 16px;
 }

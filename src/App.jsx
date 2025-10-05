@@ -6,6 +6,7 @@ import Auth from './pages/Auth'
 import StudentDashboard from './pages/StudentDashboard'
 import StudentFeedback from './pages/StudentFeedback'
 import AdminDashboard from './pages/AdminDashboard'
+import AdminReport from './pages/AdminReports'
 
 function App() {
   return (
@@ -31,6 +32,10 @@ function App() {
         <Route
           path='/admin-dashboard'
           element={<AdminDashboard />}
+        />
+        <Route
+          path='/admin-report'
+          element={<AdminReport />}
         />
         <Route
           path='/'

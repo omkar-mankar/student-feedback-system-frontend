@@ -15,7 +15,6 @@ function StudentDashboard() {
 
   const token = localStorage.getItem('token')
 
-  // Fetch student info
   useEffect(() => {
     const fetchStudent = async () => {
       try {
@@ -38,7 +37,6 @@ function StudentDashboard() {
     if (token) fetchStudent()
   }, [token])
 
-  // Submit feedback
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!selectedCourse) return
@@ -75,13 +73,11 @@ function StudentDashboard() {
   }
 
   if (loading)
-    return (
-      <div className='student-dashboard-container'>Loading student data...</div>
-    )
+    return <div className='dashboard-container'>Loading student data...</div>
 
   return (
-    <div className='student-dashboard-container'>
-      {student && <h2>Welcome, {student.username}!</h2>}
+    <div className='dashboard-container'>
+      {student && <h2 className='welcome-msg'>Welcome, {student.username}!</h2>}
 
       <div className='student-tabs'>
         <button
@@ -98,75 +94,83 @@ function StudentDashboard() {
         </button>
       </div>
 
-      {activeTab === 'courses' && (
-        <div className='dashboard-layout'>
-          <div className='students-sidebar'>
-            {courses.length === 0 ? (
-              <p>No courses assigned yet.</p>
-            ) : (
-              courses.map((course) => (
-                <div
-                  key={course._id}
-                  className={`student-card ${
-                    selectedCourse?._id === course._id ? 'selected' : ''
-                  }`}
-                  onClick={() => setSelectedCourse(course)}
-                >
-                  <strong>{course.course_name}</strong>
-                  <small>Semester {course.semester}</small>
+      <div className='tab-content'>
+        {activeTab === 'courses' && (
+          <div className='dashboard-layout'>
+            {/* Courses Sidebar */}
+            <div className='courses-sidebar'>
+              {courses.length === 0 ? (
+                <p>No courses assigned yet.</p>
+              ) : (
+                <ul className='course-list'>
+                  {courses.map((course) => (
+                    <li
+                      key={course._id}
+                      className={
+                        selectedCourse?._id === course._id
+                          ? 'active-course'
+                          : ''
+                      }
+                      onClick={() => setSelectedCourse(course)}
+                    >
+                      <strong>{course.course_name}</strong>
+                      <br />
+                      Semester {course.semester}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* Feedback Center Panel */}
+            <div className='center-panel'>
+              {selectedCourse ? (
+                <div className='feedback-form-container'>
+                  <h3>Feedback for {selectedCourse.course_name}</h3>
+                  <form onSubmit={handleSubmit}>
+                    <label>
+                      Rating (1–5):
+                      <input
+                        type='number'
+                        min='1'
+                        max='5'
+                        value={rating}
+                        onChange={(e) => setRating(e.target.value)}
+                        required
+                      />
+                    </label>
+
+                    <label>
+                      Comment:
+                      <textarea
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        placeholder='Share your thoughts about the course...'
+                      />
+                    </label>
+
+                    <button
+                      type='submit'
+                      className='submit-btn'
+                      disabled={submitting}
+                    >
+                      {submitting ? 'Submitting...' : 'Submit Feedback'}
+                    </button>
+                  </form>
+
+                  {message && <p className='feedback-message'>{message}</p>}
                 </div>
-              ))
-            )}
+              ) : (
+                <p style={{ textAlign: 'center', marginTop: '2rem' }}>
+                  Select a course to submit feedback.
+                </p>
+              )}
+            </div>
           </div>
+        )}
 
-          <div className='center-panel'>
-            {selectedCourse ? (
-              <div className='feedback-form-container'>
-                <h3>Feedback for {selectedCourse.course_name}</h3>
-                <form onSubmit={handleSubmit}>
-                  <label>
-                    Rating (1–5):
-                    <input
-                      type='number'
-                      min='1'
-                      max='5'
-                      value={rating}
-                      onChange={(e) => setRating(e.target.value)}
-                      required
-                    />
-                  </label>
-                  <label>
-                    Comment:
-                    <textarea
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                      placeholder='Share your thoughts about the course...'
-                    />
-                  </label>
-                  <button
-                    type='submit'
-                    className='submit-btn'
-                    disabled={submitting}
-                  >
-                    {submitting ? 'Submitting...' : 'Submit Feedback'}
-                  </button>
-                </form>
-                {message && <p className='feedback-message'>{message}</p>}
-              </div>
-            ) : (
-              <p style={{ textAlign: 'center', marginTop: '2rem' }}>
-                Select a course to give feedback.
-              </p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'feedback' && (
-        <div className='feedback-management'>
-          <StudentFeedback />
-        </div>
-      )}
+        {activeTab === 'feedback' && <StudentFeedback />}
+      </div>
     </div>
   )
 }
@@ -250,11 +254,13 @@ export default StudentDashboard
 //   }
 
 //   if (loading)
-//     return <div className='dashboard-container'>Loading student data...</div>
+//     return (
+//       <div className='student-dashboard-container'>Loading student data...</div>
+//     )
 
 //   return (
-//     <div className='dashboard-container'>
-//       {student && <h2 className='welcome-msg'>Welcome, {student.username}!</h2>}
+//     <div className='student-dashboard-container'>
+//       {student && <h2>Welcome, {student.username}!</h2>}
 
 //       <div className='student-tabs'>
 //         <button
@@ -271,84 +277,75 @@ export default StudentDashboard
 //         </button>
 //       </div>
 
-//       <div className='tab-content'>
-//         {activeTab === 'courses' && (
-//           <div className='courses-container'>
-//             <div className='courses-list'>
-//               {courses.length === 0 ? (
-//                 <p>No courses assigned yet.</p>
-//               ) : (
-//                 <ul>
-//                   {courses.map((course) => (
-//                     <li
-//                       key={course._id}
-//                       className={
-//                         selectedCourse?._id === course._id
-//                           ? 'active-course'
-//                           : ''
-//                       }
-//                       onClick={() => setSelectedCourse(course)}
-//                     >
-//                       <strong>{course.course_name}</strong> – Semester{' '}
-//                       {course.semester}
-//                     </li>
-//                   ))}
-//                 </ul>
-//               )}
-//             </div>
-
-//             <div className='feedback-form-side'>
-//               {selectedCourse ? (
-//                 <div className='feedback-form-container'>
-//                   <h3>Feedback for {selectedCourse.course_name}</h3>
-//                   <form onSubmit={handleSubmit}>
-//                     <label>
-//                       Rating (1–5):
-//                       <input
-//                         type='number'
-//                         min='1'
-//                         max='5'
-//                         value={rating}
-//                         onChange={(e) => setRating(e.target.value)}
-//                         required
-//                       />
-//                     </label>
-
-//                     <label>
-//                       Comment:
-//                       <textarea
-//                         value={comment}
-//                         onChange={(e) => setComment(e.target.value)}
-//                         placeholder='Share your thoughts about the course...'
-//                       />
-//                     </label>
-
-//                     <button
-//                       type='submit'
-//                       className='submit-btn'
-//                       disabled={submitting}
-//                     >
-//                       {submitting ? 'Submitting...' : 'Submit Feedback'}
-//                     </button>
-//                   </form>
-
-//                   {message && <p className='feedback-message'>{message}</p>}
+//       {activeTab === 'courses' && (
+//         <div className='dashboard-layout'>
+//           <div className='students-sidebar'>
+//             {courses.length === 0 ? (
+//               <p>No courses assigned yet.</p>
+//             ) : (
+//               courses.map((course) => (
+//                 <div
+//                   key={course._id}
+//                   className={`student-card ${
+//                     selectedCourse?._id === course._id ? 'selected' : ''
+//                   }`}
+//                   onClick={() => setSelectedCourse(course)}
+//                 >
+//                   <strong>{course.course_name}</strong>
+//                   <small>Semester {course.semester}</small>
 //                 </div>
-//               ) : (
-//                 <p style={{ textAlign: 'center', marginTop: '2rem' }}>
-//                   Select a course to give feedback.
-//                 </p>
-//               )}
-//             </div>
+//               ))
+//             )}
 //           </div>
-//         )}
 
-//         {activeTab === 'feedback' && (
-//           <div className='feedback-cards-container'>
-//             <StudentFeedback />
+//           <div className='center-panel'>
+//             {selectedCourse ? (
+//               <div className='feedback-form-container'>
+//                 <h3>Feedback for {selectedCourse.course_name}</h3>
+//                 <form onSubmit={handleSubmit}>
+//                   <label>
+//                     Rating (1–5):
+//                     <input
+//                       type='number'
+//                       min='1'
+//                       max='5'
+//                       value={rating}
+//                       onChange={(e) => setRating(e.target.value)}
+//                       required
+//                     />
+//                   </label>
+//                   <label>
+//                     Comment:
+//                     <textarea
+//                       value={comment}
+//                       onChange={(e) => setComment(e.target.value)}
+//                       placeholder='Share your thoughts about the course...'
+//                     />
+//                   </label>
+//                   <button
+//                     type='submit'
+//                     className='submit-btn'
+//                     disabled={submitting}
+//                   >
+//                     {submitting ? 'Submitting...' : 'Submit Feedback'}
+//                   </button>
+//                 </form>
+//                 {message && <p className='feedback-message'>{message}</p>}
+//               </div>
+//             ) : (
+//               <p style={{ textAlign: 'center', marginTop: '2rem' }}>
+//                 Select a course to give feedback.
+//               </p>
+//             )}
 //           </div>
-//         )}
-//       </div>
+//         </div>
+//       )}
+
+//       {activeTab === 'feedback' && (
+//         <div className='feedback-management'>
+//           <StudentFeedback />
+//         </div>
+//       )}
 //     </div>
 //   )
 // }
