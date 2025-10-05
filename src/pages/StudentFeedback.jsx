@@ -1,230 +1,217 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "../styles/Feedback.css";
+import React, { useEffect, useState } from 'react'
+import '../styles/StudentFeedback.css'
 
+const StudentFeedback = () => {
+  const [courses, setCourses] = useState([])
+  const [selectedCourse, setSelectedCourse] = useState(null)
+  const [rating, setRating] = useState('')
+  const [comment, setComment] = useState('')
+  const [myFeedbacks, setMyFeedbacks] = useState([])
+  const token = localStorage.getItem('token')
 
-function StudentFeedback() {
-  const [courses, setCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState("");
-  const [courseDetails, setCourseDetails] = useState(null);
-  const [form, setForm] = useState({ rating: "", comment: "" });
-  const [message, setMessage] = useState("");
-
-  // Fetch courses on mount
+  // Fetch courses and feedbacks
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/courses", { withCredentials: true })
-      .then((res) => setCourses(res.data))
-      .catch((err) => console.error(err));
-  }, []);
+    fetch('http://127.0.0.1:5000/students/me', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.courses) setCourses(data.courses)
+        localStorage.setItem('username', data.username)
+      })
+      .catch((err) => console.log(err))
 
-  // Handle course selection
-  const handleCourseSelect = (e) => {
-    const courseId = e.target.value;
-    setSelectedCourse(courseId);
-    const course = courses.find((c) => c._id === courseId);
-    setCourseDetails(course || null);
-  };
+    fetch('http://127.0.0.1:5000/feedback/my', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => setMyFeedbacks(data))
+      .catch((err) => console.log(err))
+  }, [])
 
-  // Handle form changes
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  // Submit feedback
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!selectedCourse) {
-      setMessage("Please select a course");
-      return;
+  const handleCourseSelect = (course) => {
+    setSelectedCourse(course)
+    const existing = myFeedbacks.find((f) => f.course_id === course._id)
+    if (existing) {
+      setRating(existing.rating)
+      setComment(existing.comment)
+    } else {
+      setRating('')
+      setComment('')
     }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!selectedCourse || !rating) return
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/feedback",
-        {
-          course_id: selectedCourse,
-          rating: form.rating,
-          comment: form.comment,
+      const res = await fetch('http://127.0.0.1:5000/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-        { withCredentials: true }
-      );
+        body: JSON.stringify({
+          course_id: selectedCourse._id,
+          rating,
+          comment,
+        }),
+      })
 
-      setMessage(res.data.message);
-      setForm({ rating: "", comment: "" });
-      setSelectedCourse("");
-      setCourseDetails(null);
+      const data = await res.json()
+      alert(data.message)
+
+      // Refresh feedbacks
+      const fbRes = await fetch('http://127.0.0.1:5000/feedback/my', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const fbData = await fbRes.json()
+      setMyFeedbacks(fbData)
+
+      const updatedFeedback = fbData.find(
+        (f) => f.course_id === selectedCourse._id
+      )
+      if (updatedFeedback) {
+        setRating(updatedFeedback.rating)
+        setComment(updatedFeedback.comment)
+      }
     } catch (err) {
-      setMessage(err.response?.data?.error || "Error submitting feedback");
+      console.error('Error saving feedback:', err)
+      alert('Something went wrong while saving feedback')
     }
-  };
+  }
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault()
+  //   if (!selectedCourse || !rating) return
+
+  //   // Check if feedback exists -> update or create
+  //   const existingFeedback = myFeedbacks.find(
+  //     (f) => f.course_id === selectedCourse._id
+  //   )
+  //   const url = existingFeedback
+  //     ? `http://127.0.0.1:5000/feedback/${existingFeedback._id}`
+  //     : 'http://127.0.0.1:5000/feedback'
+  //   const method = existingFeedback ? 'PATCH' : 'POST'
+
+  //   fetch(url, {
+  //     method,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //     body: JSON.stringify({
+  //       course_id: selectedCourse._id,
+  //       rating,
+  //       comment,
+  //     }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       alert(data.message)
+  //       // Refresh feedbacks
+  //       fetch('http://127.0.0.1:5000/feedback/my', {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       })
+  //         .then((res) => res.json())
+  //         .then((fb) => setMyFeedbacks(fb))
+  //     })
+  //     .catch((err) => console.log(err))
+  // }
+
+  const handleDelete = () => {
+    if (!selectedCourse) return
+    const existingFeedback = myFeedbacks.find(
+      (f) => f.course_id === selectedCourse._id
+    )
+    if (!existingFeedback) return
+
+    fetch(`http://127.0.0.1:5000/feedback/${existingFeedback._id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(data.message)
+        setRating('')
+        setComment('')
+        setSelectedCourse(null)
+        // Refresh feedbacks
+        fetch('http://127.0.0.1:5000/feedback/my', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then((res) => res.json())
+          .then((fb) => setMyFeedbacks(fb))
+      })
+      .catch((err) => console.log(err))
+  }
 
   return (
-    <div className="feedback-container">
-      <h2>Submit Feedback</h2>
-
-      {/* Course selection */}
-      <div>
-        <label>Select Course:</label>
-        <select value={selectedCourse} onChange={handleCourseSelect}>
-          <option value="">-- Select Course --</option>
-          {courses.map((course) => (
-            <option key={course._id} value={course._id}>
-              {course.course_name} (Semester: {course.semester})
-            </option>
-          ))}
-        </select>
+    <div className='feedback-container'>
+      <h2>Your Courses</h2>
+      <div className='courses-list'>
+        {courses.length === 0 ? (
+          <p>No courses assigned yet.</p>
+        ) : (
+          courses.map((course) => (
+            <div
+              key={course._id}
+              className={`course-card ${
+                selectedCourse?._id === course._id ? 'selected' : ''
+              }`}
+              onClick={() => handleCourseSelect(course)}
+            >
+              <h3>{course.course_name}</h3>
+              <p>Instructor: {course.instructor}</p>
+              <p>Semester: {course.semester}</p>
+            </div>
+          ))
+        )}
       </div>
 
-      {/* Show course details */}
-      {courseDetails && (
-        <div className="course-details">
-          <p><b>Course:</b> {courseDetails.course_name}</p>
-          <p><b>Semester:</b> {courseDetails.semester}</p>
-          <p><b>Instructor:</b> {courseDetails.instructor}</p>
-        </div>
-      )}
-
-      {/* Feedback form */}
-      <form onSubmit={handleSubmit}>
-        <div>
+      {selectedCourse && (
+        <form
+          className='feedback-form'
+          onSubmit={handleSubmit}
+        >
+          <h3>Feedback for {selectedCourse.course_name}</h3>
           <label>Rating (1-5):</label>
           <input
-            type="number"
-            name="rating"
-            min="1"
-            max="5"
-            value={form.rating}
-            onChange={handleChange}
+            type='number'
+            value={rating}
+            min='1'
+            max='5'
+            onChange={(e) => setRating(e.target.value)}
             required
           />
-        </div>
-        <div>
           <label>Comment:</label>
           <textarea
-            name="comment"
-            value={form.comment}
-            onChange={handleChange}
-            placeholder="Enter your feedback here..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder='Optional'
           />
-        </div>
-        <button type="submit">Submit Feedback</button>
-      </form>
+          <div className='feedback-buttons'>
+            <button type='submit'>
+              {myFeedbacks.find((f) => f.course_id === selectedCourse._id)
+                ? 'Update Feedback'
+                : 'Submit Feedback'}
+            </button>
 
-      {message && <p>{message}</p>}
+            {myFeedbacks.find((f) => f.course_id === selectedCourse._id) && (
+              <button
+                type='button'
+                className='delete-btn'
+                onClick={handleDelete}
+              >
+                Delete Feedback
+              </button>
+            )}
+          </div>
+        </form>
+      )}
     </div>
-  );
+  )
 }
 
-export default StudentFeedback;
-
-
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-
-// function FeedbackForm() {
-//   const [courses, setCourses] = useState([]);
-//   const [selectedCourse, setSelectedCourse] = useState(null);
-//   const [form, setForm] = useState({ rating: "", comment: "" });
-//   const [message, setMessage] = useState("");
-
-//   // Fetch courses on load
-//   useEffect(() => {
-//     axios
-//       .get("http://localhost:5000/courses", { withCredentials: true })
-//       .then((res) => setCourses(res.data))
-//       .catch((err) => console.error(err));
-//   }, []);
-
-//   const handleCourseSelect = (e) => {
-//     const courseId = e.target.value;
-//     const course = courses.find((c) => c._id === courseId);
-//     setSelectedCourse(course);
-//   };
-
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     if (!selectedCourse) {
-//       setMessage("Please select a course.");
-//       return;
-//     }
-
-//     try {
-//       const res = await axios.post(
-//         "http://localhost:5000/feedback",
-//         {
-//           course_id: selectedCourse._id,
-//           rating: form.rating,
-//           comment: form.comment,
-//         },
-//         { withCredentials: true }
-//       );
-//       setMessage(res.data.message);
-//       setForm({ rating: "", comment: "" });
-//       setSelectedCourse(null);
-//     } catch (err) {
-//       setMessage(err.response?.data?.error || "Error submitting feedback");
-//     }
-//   };
-
-//   return (
-//     <div className="feedback-container">
-//       <h2>Submit Feedback</h2>
-
-//       {/* Select course */}
-//       <label>Select Course:</label>
-//       <select onChange={handleCourseSelect} value={selectedCourse?._id || ""}>
-//         <option value="">-- Select a course --</option>
-//         {courses.map((course) => (
-//           <option key={course._id} value={course._id}>
-//             {course.course_name}
-//           </option>
-//         ))}
-//       </select>
-
-//       {/* Show course details */}
-//       {selectedCourse && (
-//         <div className="course-details">
-//           <p><b>Semester:</b> {selectedCourse.semester}</p>
-//           <p><b>Instructor:</b> {selectedCourse.instructor}</p>
-//         </div>
-//       )}
-
-//       {/* Feedback Form */}
-//       <form onSubmit={handleSubmit}>
-//         <label>Rating (1-5):</label>
-//         <input
-//           type="number"
-//           name="rating"
-//           min="1"
-//           max="5"
-//           value={form.rating}
-//           onChange={handleChange}
-//           required
-//         />
-
-//         <label>Comment:</label>
-//         <textarea
-//           name="comment"
-//           value={form.comment}
-//           onChange={handleChange}
-//           placeholder="Write your feedback here..."
-//         />
-
-//         <button type="submit">Submit Feedback</button>
-//       </form>
-
-//       {message && <p>{message}</p>}
-//     </div>
-//   );
-// }
-
-// export default FeedbackForm;
-
-
+export default StudentFeedback
