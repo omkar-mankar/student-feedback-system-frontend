@@ -1,55 +1,136 @@
-.admin-container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 30px 40px;
-    background: #f5f7ff;
-    border-radius: 15px;
-    box-shadow: 0 12px 25px rgba(0,0,0,0.1);
-    font-family: 'Poppins', sans-serif;
+.admin-dashboard-container {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  color: #2563eb;
+  margin-bottom: 2rem;
+}
+
+/* Layout */
+.dashboard-layout {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Students Sidebar */
+.students-sidebar {
+  flex: 0.25;
+  min-width: 220px;
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.student-card {
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.6rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.student-card:hover {
+  background-color: #dbeafe;
+  transform: translateY(-2px);
+}
+
+.student-card.selected {
+  border: 2px solid #2563eb;
+  background-color: #eff6ff;
+}
+
+/* Center Panel */
+.center-panel {
+  flex: 0.7;
+  min-width: 500px;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.center-panel h3 {
+  color: #1e3a8a;
+  margin-bottom: 0.5rem;
+}
+
+.center-panel p {
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+/* Courses Selection */
+.courses-selection h4 {
+  margin-bottom: 0.5rem;
+}
+
+.courses-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.course-checkbox {
+  flex: 1 1 45%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.course-checkbox:hover {
+  background-color: #f0f4ff;
+}
+
+/* Highlight already assigned courses */
+.course-checkbox.assigned {
+  background-color: #dbeafe; /* light blue background */
+  border: 2px solid #2563eb;
+}
+
+/* Assign Button */
+.assign-btn {
+  margin-top: 1.5rem;
+  padding: 12px 20px;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.assign-btn:hover {
+  background-color: #1e40af;
+  transform: translateY(-2px);
+}
+
+.assign-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .dashboard-layout {
+    flex-direction: column;
   }
-  
-  .admin-container h2 {
-    text-align: center;
-    color: #1a1a1a;
-    margin-bottom: 25px;
+  .center-panel {
+    min-width: auto;
   }
-  
-  .logout-btn {
-    float: right;
-    padding: 10px 18px;
-    margin-bottom: 20px;
-    background: #ff4b5c;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  .students-sidebar {
+    flex: 1;
   }
-  
-  .logout-btn:hover {
-    background: #e8434d;
-    transform: translateY(-2px);
-  }
-  
-  section {
-    margin-bottom: 25px;
-  }
-  
-  section h3 {
-    color: #007bff;
-    margin-bottom: 10px;
-  }
-  
-  ul {
-    list-style: none;
-    padding-left: 0;
-  }
-  
-  ul li {
-    background: #fff;
-    padding: 12px 15px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    box-shadow: 0 5px 12px rgba(0,0,0,0.05);
-  }
-  
+}

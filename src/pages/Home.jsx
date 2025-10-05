@@ -1,3 +1,4 @@
+// src\pages\Home.jsx
 import React from 'react'
 import '../styles/Home.css'
 import universityImage from '../assets/jsm_clg.jpg' // Place an image inside src/assets/

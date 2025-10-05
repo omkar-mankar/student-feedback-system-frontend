@@ -1,3 +1,4 @@
+// src\pages\StudentFeedback.jsx
 import React, { useEffect, useState } from 'react'
 import '../styles/StudentFeedback.css'
 
@@ -81,44 +82,6 @@ const StudentFeedback = () => {
       alert('Something went wrong while saving feedback')
     }
   }
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault()
-  //   if (!selectedCourse || !rating) return
-
-  //   // Check if feedback exists -> update or create
-  //   const existingFeedback = myFeedbacks.find(
-  //     (f) => f.course_id === selectedCourse._id
-  //   )
-  //   const url = existingFeedback
-  //     ? `http://127.0.0.1:5000/feedback/${existingFeedback._id}`
-  //     : 'http://127.0.0.1:5000/feedback'
-  //   const method = existingFeedback ? 'PATCH' : 'POST'
-
-  //   fetch(url, {
-  //     method,
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //     body: JSON.stringify({
-  //       course_id: selectedCourse._id,
-  //       rating,
-  //       comment,
-  //     }),
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       alert(data.message)
-  //       // Refresh feedbacks
-  //       fetch('http://127.0.0.1:5000/feedback/my', {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       })
-  //         .then((res) => res.json())
-  //         .then((fb) => setMyFeedbacks(fb))
-  //     })
-  //     .catch((err) => console.log(err))
-  // }
 
   const handleDelete = () => {
     if (!selectedCourse) return

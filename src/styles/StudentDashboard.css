@@ -1,3 +1,6 @@
+/* src\styles\StudentDashboard.css */
+
+/* Container */
 .dashboard-container {
   max-width: 800px;
   margin: 2rem auto;
@@ -5,6 +8,7 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Welcome message */
 .welcome-msg {
   text-align: center;
   color: #2563eb;
@@ -12,6 +16,7 @@
   margin-bottom: 1rem;
 }
 
+/* Course list */
 .course-list {
   list-style: none;
   padding: 0;
@@ -25,7 +30,7 @@
   background-color: #f0f4ff;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition: background 0.2s, transform 0.2s, color 0.2s;
 }
 
 .course-list li:hover {
@@ -33,6 +38,19 @@
   transform: translateY(-2px);
 }
 
+/* Highlight selected course */
+.course-list li.active-course {
+  background-color: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}
+
+.course-list li.active-course:hover {
+  background-color: #1e40af;
+  transform: translateY(-2px);
+}
+
+/* Feedback form container */
 .feedback-form-container {
   margin-top: 2rem;
   padding: 1.5rem;
@@ -40,6 +58,7 @@
   border-radius: 12px;
   background-color: #ffffff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.8s ease;
 }
 
 .feedback-form-container h3 {
@@ -47,6 +66,7 @@
   color: #1e3a8a;
 }
 
+/* Feedback form */
 .feedback-form-container form {
   display: flex;
   flex-direction: column;
@@ -67,6 +87,14 @@
   border: 1px solid #cbd5e1;
   font-size: 0.95rem;
   margin-top: 0.3rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.feedback-form-container input:focus,
+.feedback-form-container textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.45);
 }
 
 .feedback-form-container textarea {
@@ -74,6 +102,7 @@
   min-height: 80px;
 }
 
+/* Submit button */
 .submit-btn {
   padding: 0.8rem 1.2rem;
   background-color: #2563eb;
@@ -85,17 +114,43 @@
   transition: background 0.3s, transform 0.2s;
 }
 
-.submit-btn:hover {
+.submit-btn:hover:not(:disabled) {
   background-color: #1e40af;
   transform: translateY(-2px);
 }
 
-.submit-btn:active {
+.submit-btn:active:not(:disabled) {
   transform: translateY(0);
 }
 
+.submit-btn:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* Feedback message */
 .feedback-message {
   margin-top: 1rem;
   font-weight: 600;
   color: #1e40af;
+  transition: opacity 0.3s ease;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 0 0.5rem;
+  }
 }

@@ -17,26 +17,19 @@ function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   useEffect(() => {
-    // Initialize from localStorage
-    setIsLoggedIn(Boolean(localStorage.getItem('token')))
-    setUsername(localStorage.getItem('username') || '')
-    setRole(localStorage.getItem('role') || '')
-
-    const onAuth = () => {
+    const loadAuth = () => {
       setIsLoggedIn(Boolean(localStorage.getItem('token')))
       setUsername(localStorage.getItem('username') || '')
       setRole(localStorage.getItem('role') || '')
     }
 
-    const onStorage = (e) => {
-      if (['token', 'username', 'role'].includes(e.key)) onAuth()
-    }
+    loadAuth()
+    window.addEventListener('authChanged', loadAuth)
+    window.addEventListener('storage', loadAuth)
 
-    window.addEventListener('authChanged', onAuth)
-    window.addEventListener('storage', onStorage)
     return () => {
-      window.removeEventListener('authChanged', onAuth)
-      window.removeEventListener('storage', onStorage)
+      window.removeEventListener('authChanged', loadAuth)
+      window.removeEventListener('storage', loadAuth)
     }
   }, [])
 
@@ -77,14 +70,28 @@ function Navbar() {
               <FaHome className='nav-icon' /> Home
             </Link>
           </li>
-          <li>
-            <Link
-              to='/courses'
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <FaBookOpen className='nav-icon' /> Courses
-            </Link>
-          </li>
+
+          {isLoggedIn && role === 'student' && (
+            <li>
+              <Link
+                to='/student-dashboard'
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <FaBookOpen className='nav-icon' /> Dashboard
+              </Link>
+            </li>
+          )}
+
+          {isLoggedIn && role === 'admin' && (
+            <li>
+              <Link
+                to='/admin-dashboard'
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <FaUserShield className='nav-icon' /> Admin Dashboard
+              </Link>
+            </li>
+          )}
 
           {!isLoggedIn && (
             <li>
@@ -101,29 +108,17 @@ function Navbar() {
           )}
 
           {isLoggedIn && (
-            <>
-              {role === 'admin' && (
-                <li>
-                  <Link
-                    to='/admin-dashboard'
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <FaUserShield className='nav-icon' /> Admin Dashboard
-                  </Link>
-                </li>
-              )}
-              <li>
-                <button
-                  className='logout-btn'
-                  onClick={() => {
-                    setIsMenuOpen(false)
-                    handleLogout()
-                  }}
-                >
-                  <FaSignOutAlt className='nav-icon' /> Logout
-                </button>
-              </li>
-            </>
+            <li>
+              <button
+                className='logout-btn'
+                onClick={() => {
+                  setIsMenuOpen(false)
+                  handleLogout()
+                }}
+              >
+                <FaSignOutAlt className='nav-icon' /> Logout
+              </button>
+            </li>
           )}
         </ul>
 
