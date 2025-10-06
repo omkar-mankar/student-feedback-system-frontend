@@ -1,7 +1,7 @@
 // src\pages\Home.jsx
 import React from 'react'
 import '../styles/Home.css'
-import universityImage from '../assets/jsm_clg.jpg' // Place an image inside src/assets/
+import CollegeImage from '../assets/jsm_clg.jpg' // Place an image inside src/assets/
 
 function Home() {
   return (
@@ -9,12 +9,12 @@ function Home() {
       {/* Hero Section */}
       <header className='hero'>
         <img
-          src={universityImage}
+          src={CollegeImage}
           alt='University'
           className='hero-img'
         />
         <div className='hero-text'>
-          <h1>Welcome to Our University</h1>
+          <h1>Welcome to Our College</h1>
           <p>
             The <strong>Student Feedback System</strong> helps us improve
             teaching quality by gathering feedback from students in real time.
