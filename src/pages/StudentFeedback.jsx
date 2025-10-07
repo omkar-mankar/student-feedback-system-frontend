@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
 import '../styles/StudentFeedback.css'
 
-function StudentFeedback() {
-  const [feedbacks, setFeedbacks] = useState([])
+function StudentFeedback({ feedbacks, setFeedbacks }) {
   const [loading, setLoading] = useState(true)
   const token = localStorage.getItem('token')
 
@@ -18,7 +17,7 @@ function StudentFeedback() {
         headers: { Authorization: `Bearer ${token}` },
       })
       const data = await res.json()
-      setFeedbacks(data)
+      setFeedbacks(data) // update parent state
     } catch (err) {
       console.error(err)
     } finally {
@@ -35,9 +34,9 @@ function StudentFeedback() {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
-
       const data = await res.json()
       if (res.ok) {
+        // update parent state so StudentDashboard sees the change
         setFeedbacks((prev) => prev.filter((fb) => fb._id !== feedbackId))
       } else {
         alert(data.error || 'Failed to delete feedback')
@@ -70,8 +69,7 @@ function StudentFeedback() {
                   className='delete-btn'
                   onClick={() => handleDelete(fb._id)}
                 >
-                  <FaTrashAlt />
-                  Delete
+                  <FaTrashAlt /> Delete
                 </button>
               </div>
             </div>

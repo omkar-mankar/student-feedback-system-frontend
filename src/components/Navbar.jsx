@@ -82,7 +82,10 @@ function Navbar() {
             <li>
               <button
                 className='logout-btn'
-                onClick={() => logout()}
+                onClick={() => {
+                  logout()
+                  navigate('/home')
+                }}
               >
                 <FaSignOutAlt className='nav-icon' /> Logout
               </button>
@@ -105,4 +108,7 @@ function Navbar() {
 }
 
 export default Navbar
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes

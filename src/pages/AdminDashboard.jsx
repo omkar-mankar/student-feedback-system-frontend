@@ -87,8 +87,11 @@ function AdminDashboard() {
     }
   }
 
+  const [assigning, setAssigning] = useState(false)
+
   const handleAssignCourses = async () => {
     if (!selectedStudent) return
+    setAssigning(true)
     try {
       const res = await fetch(
         `http://127.0.0.1:5000/students/${selectedStudent._id}/assign-courses`,
@@ -103,8 +106,14 @@ function AdminDashboard() {
       )
       const data = await res.json()
       alert(data.message)
-      fetchStudents()
-      const refreshedStudent = students.find(
+
+      const studentsRes = await fetch('http://127.0.0.1:5000/students', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const updatedStudents = await studentsRes.json()
+      setStudents(updatedStudents)
+
+      const refreshedStudent = updatedStudents.find(
         (s) => s._id === selectedStudent._id
       )
       setSelectedStudent(refreshedStudent)
@@ -112,6 +121,8 @@ function AdminDashboard() {
     } catch (err) {
       console.error(err)
       alert('Failed to assign courses')
+    } finally {
+      setAssigning(false)
     }
   }
 
@@ -250,8 +261,9 @@ function AdminDashboard() {
                 <button
                   className='assign-btn'
                   onClick={handleAssignCourses}
+                  disabled={assigning}
                 >
-                  Assign Courses
+                  {assigning ? 'Assigning...' : 'Assign Courses'}
                 </button>
               </>
             ) : (
@@ -294,6 +306,8 @@ function AdminDashboard() {
               value={newCourse.description}
               onChange={handleCourseChange}
             />
+
+            {/* Add / Update Button */}
             <button onClick={handleAddOrEditCourse}>
               {editingCourseId ? (
                 <>
@@ -305,6 +319,25 @@ function AdminDashboard() {
                 </>
               )}
             </button>
+
+            {/* Cancel Button (only show when editing) */}
+            {editingCourseId && (
+              <button
+                type='button'
+                className='cancel-btn'
+                onClick={() => {
+                  setNewCourse({
+                    course_name: '',
+                    instructor: '',
+                    semester: '',
+                    description: '',
+                  })
+                  setEditingCourseId(null)
+                }}
+              >
+                Cancel
+              </button>
+            )}
           </div>
 
           <div className='courses-table'>
@@ -332,6 +365,7 @@ function AdminDashboard() {
       )}
 
       {/* Feedback Management */}
+<<<<<<< Updated upstream
 {selectedTab === 'feedback' && (
   <div className='feedback-management'>
     <div className='export-buttons'>
@@ -356,6 +390,38 @@ function AdminDashboard() {
               <small>Rating: {fb.rating || 'N/A'}</small>
             </div>
           ))}
+=======
+      {selectedTab === 'feedback' && (
+        <div className='feedback-management'>
+          <div className='feedback-center-panel'>
+            <h3>All Feedbacks</h3>
+            {feedbacks.length > 0 ? (
+              <div className='feedback-list'>
+                {feedbacks.map((fb) => {
+                  // Find the course from courses state
+                  const course = courses.find((c) => c._id === fb.course_id)
+
+                  return (
+                    <div
+                      key={fb._id}
+                      className='feedback-item'
+                    >
+                      <strong>
+                        {fb.student_name} →{' '}
+                        {course?.course_name || fb.course_name} (
+                        {course?.semester || fb.semester})
+                      </strong>
+                      <p>{fb.comment}</p>
+                      <small>Rating: {fb.rating || 'N/A'}</small>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <p>No feedback available yet.</p>
+            )}
+          </div>
+>>>>>>> Stashed changes
         </div>
       ) : (
         <p>No feedback available yet.</p>

@@ -5,6 +5,7 @@ import StudentFeedback from './StudentFeedback'
 function StudentDashboard() {
   const [student, setStudent] = useState(null)
   const [courses, setCourses] = useState([])
+  const [feedbacks, setFeedbacks] = useState([]) // store existing feedback
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [rating, setRating] = useState('')
   const [comment, setComment] = useState('')
@@ -14,28 +15,63 @@ function StudentDashboard() {
   const [activeTab, setActiveTab] = useState('courses') // Default tab
 
   const token = localStorage.getItem('token')
+  let messageTimeout = null // track timeout
 
   useEffect(() => {
-    const fetchStudent = async () => {
+    const fetchStudentAndFeedback = async () => {
       try {
         setLoading(true)
-        const res = await fetch('http://127.0.0.1:5000/students/me', {
+        // fetch student
+        const resStudent = await fetch('http://127.0.0.1:5000/students/me', {
           headers: { Authorization: `Bearer ${token}` },
         })
-        if (!res.ok) throw new Error('Failed to fetch student info')
-        const data = await res.json()
+        if (!resStudent.ok) throw new Error('Failed to fetch student info')
+        const data = await resStudent.json()
         setStudent(data)
         setCourses(data?.courses || [])
+
+        // fetch student feedback
+        const resFeedback = await fetch(
+          'http://127.0.0.1:5000/feedback/student',
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        if (!resFeedback.ok) throw new Error('Failed to fetch feedback')
+        const feedbackData = await resFeedback.json()
+        setFeedbacks(feedbackData)
       } catch (err) {
         console.error(err)
-        setMessage('Error fetching student data. Please log in again.')
+        showMessage('❌ Error fetching student data. Please log in again.')
       } finally {
         setLoading(false)
       }
     }
 
-    if (token) fetchStudent()
+    if (token) fetchStudentAndFeedback()
+
+    // cleanup
+    return () => clearTimeout(messageTimeout)
   }, [token])
+
+  const showMessage = (msg) => {
+    setMessage(msg)
+    clearTimeout(messageTimeout)
+    messageTimeout = setTimeout(() => setMessage(''), 3000)
+  }
+
+  const handleCourseSelect = (course) => {
+    setSelectedCourse(course)
+    // check if feedback exists
+    const existing = feedbacks.find((f) => f.course_id === course._id)
+    if (existing) {
+      setRating(existing.rating)
+      setComment(existing.comment)
+    } else {
+      setRating('')
+      setComment('')
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -58,15 +94,33 @@ function StudentDashboard() {
 
       const data = await res.json()
       if (res.ok) {
-        setMessage('✅ Feedback submitted successfully!')
-        setRating('')
-        setComment('')
+        showMessage('✅ Feedback submitted successfully!')
+        // update local feedbacks state
+        setFeedbacks((prev) => {
+          const existing = prev.find((f) => f.course_id === selectedCourse._id)
+          if (existing) {
+            return prev.map((f) =>
+              f.course_id === selectedCourse._id
+                ? { ...f, rating: Number(rating), comment }
+                : f
+            )
+          } else {
+            return [
+              ...prev,
+              {
+                course_id: selectedCourse._id,
+                rating: Number(rating),
+                comment,
+              },
+            ]
+          }
+        })
       } else {
-        setMessage(`❌ ${data.error || 'Error submitting feedback'}`)
+        showMessage(`❌ ${data.error || 'Error submitting feedback'}`)
       }
     } catch (err) {
       console.error(err)
-      setMessage('Network error. Please try again.')
+      showMessage('❌ Network error. Please try again.')
     } finally {
       setSubmitting(false)
     }
@@ -97,7 +151,6 @@ function StudentDashboard() {
       <div className='tab-content'>
         {activeTab === 'courses' && (
           <div className='dashboard-layout'>
-            {/* Courses Sidebar */}
             <div className='courses-sidebar'>
               {courses.length === 0 ? (
                 <p>No courses assigned yet.</p>
@@ -111,7 +164,7 @@ function StudentDashboard() {
                           ? 'active-course'
                           : ''
                       }
-                      onClick={() => setSelectedCourse(course)}
+                      onClick={() => handleCourseSelect(course)}
                     >
                       <strong>{course.course_name}</strong>
                       <br />
@@ -122,7 +175,6 @@ function StudentDashboard() {
               )}
             </div>
 
-            {/* Feedback Center Panel */}
             <div className='center-panel'>
               {selectedCourse ? (
                 <div className='feedback-form-container'>
@@ -154,7 +206,13 @@ function StudentDashboard() {
                       className='submit-btn'
                       disabled={submitting}
                     >
-                      {submitting ? 'Submitting...' : 'Submit Feedback'}
+                      {submitting
+                        ? 'Submitting...'
+                        : feedbacks.find(
+                            (f) => f.course_id === selectedCourse._id
+                          )
+                        ? 'Update Feedback'
+                        : 'Submit Feedback'}
                     </button>
                   </form>
 
@@ -169,7 +227,12 @@ function StudentDashboard() {
           </div>
         )}
 
-        {activeTab === 'feedback' && <StudentFeedback />}
+        {activeTab === 'feedback' && (
+          <StudentFeedback
+            feedbacks={feedbacks}
+            setFeedbacks={setFeedbacks}
+          />
+        )}
       </div>
     </div>
   )
