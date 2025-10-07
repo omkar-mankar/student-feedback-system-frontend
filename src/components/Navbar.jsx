@@ -108,7 +108,3 @@ function Navbar() {
 }
 
 export default Navbar
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes

@@ -24,7 +24,6 @@ function AdminDashboard() {
     if (selectedTab === 'feedback') fetchAllFeedbacks()
   }, [selectedTab])
 
-
   // Fetch Data---------------------------------------------
 
   const fetchStudents = async () => {
@@ -51,7 +50,6 @@ function AdminDashboard() {
     }
   }
 
-
   // Feedback Logic (All Feedbacks)------------------------------
 
   const fetchAllFeedbacks = async () => {
@@ -67,9 +65,8 @@ function AdminDashboard() {
     }
   }
 
-
   // Student Assignment Logic-------------------------------------------
-  
+
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [selectedCourses, setSelectedCourses] = useState([])
 
@@ -126,9 +123,8 @@ function AdminDashboard() {
     }
   }
 
- 
   // Course Management Logic--------------------------------------
- 
+
   const handleCourseChange = (e) => {
     setNewCourse({ ...newCourse, [e.target.name]: e.target.value })
   }
@@ -201,7 +197,7 @@ function AdminDashboard() {
           className={selectedTab === 'students' ? 'active-tab' : ''}
           onClick={() => setSelectedTab('students')}
         >
-          Course Assign 
+          Course Assign
         </button>
         <button
           className={selectedTab === 'courses' ? 'active-tab' : ''}
@@ -365,71 +361,48 @@ function AdminDashboard() {
       )}
 
       {/* Feedback Management */}
-<<<<<<< Updated upstream
-{selectedTab === 'feedback' && (
-  <div className='feedback-management'>
-    <div className='export-buttons'>
-      <button onClick={() => window.open('http://127.0.0.1:5000/export/csv', '_blank')}>
-        Export CSV
-      </button>
-      <button onClick={() => window.open('http://127.0.0.1:5000/export/pdf', '_blank')}>
-        Export PDF
-      </button>
-    </div>
-
-    <div className='feedback-center-panel'>
-      <h3>All Feedbacks</h3>
-      {feedbacks.length > 0 ? (
-        <div className='feedback-list'>
-          {feedbacks.map((fb) => (
-            <div key={fb._id} className='feedback-item'>
-              <strong>
-                {fb.student_name} → {fb.course_name} ({fb.semester})
-              </strong>
-              <p>{fb.comment}</p>
-              <small>Rating: {fb.rating || 'N/A'}</small>
-            </div>
-          ))}
-=======
       {selectedTab === 'feedback' && (
         <div className='feedback-management'>
+          <div className='export-buttons'>
+            <button
+              onClick={() =>
+                window.open('http://127.0.0.1:5000/export/csv', '_blank')
+              }
+            >
+              Export CSV
+            </button>
+            <button
+              onClick={() =>
+                window.open('http://127.0.0.1:5000/export/pdf', '_blank')
+              }
+            >
+              Export PDF
+            </button>
+          </div>
+
           <div className='feedback-center-panel'>
             <h3>All Feedbacks</h3>
             {feedbacks.length > 0 ? (
               <div className='feedback-list'>
-                {feedbacks.map((fb) => {
-                  // Find the course from courses state
-                  const course = courses.find((c) => c._id === fb.course_id)
-
-                  return (
-                    <div
-                      key={fb._id}
-                      className='feedback-item'
-                    >
-                      <strong>
-                        {fb.student_name} →{' '}
-                        {course?.course_name || fb.course_name} (
-                        {course?.semester || fb.semester})
-                      </strong>
-                      <p>{fb.comment}</p>
-                      <small>Rating: {fb.rating || 'N/A'}</small>
-                    </div>
-                  )
-                })}
+                {feedbacks.map((fb) => (
+                  <div
+                    key={fb._id}
+                    className='feedback-item'
+                  >
+                    <strong>
+                      {fb.student_name} → {fb.course_name} ({fb.semester})
+                    </strong>
+                    <p>{fb.comment}</p>
+                    <small>Rating: {fb.rating || 'N/A'}</small>
+                  </div>
+                ))}
               </div>
             ) : (
               <p>No feedback available yet.</p>
             )}
           </div>
->>>>>>> Stashed changes
         </div>
-      ) : (
-        <p>No feedback available yet.</p>
       )}
-    </div>
-  </div>
-)}
-
     </div>
   )
 }
