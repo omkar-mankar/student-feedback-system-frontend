@@ -1,8 +1,8 @@
-/* src\pages\Auth.jsx */
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import axios from 'axios'
 import '../styles/Auth.css'
 import { useNavigate } from 'react-router-dom'
+import AuthContext from '../context/AuthContext'
 
 function Auth() {
   const [activeTab, setActiveTab] = useState('login')
@@ -14,6 +14,7 @@ function Auth() {
     role: 'student',
   })
   const navigate = useNavigate()
+  const { login } = useContext(AuthContext)
 
   // Login handlers
   const handleLoginChange = (e) =>
@@ -23,15 +24,31 @@ function Auth() {
     e.preventDefault()
     try {
       const res = await axios.post('http://127.0.0.1:5000/login', loginForm)
-      localStorage.setItem('token', res.data.token)
-      localStorage.setItem('role', res.data.role)
-      localStorage.setItem('username', res.data.username) // save username
+      login({
+        token: res.data.token,
+        username: res.data.username,
+        role: res.data.role,
+      })
       alert(res.data.message)
       navigate(res.data.role === 'admin' ? '/admin-dashboard' : '/home')
     } catch (err) {
       alert(err.response?.data?.error || 'Login failed!')
     }
   }
+
+  // const handleLoginSubmit = async (e) => {
+  //   e.preventDefault()
+  //   try {
+  //     const res = await axios.post('http://127.0.0.1:5000/login', loginForm)
+  //     localStorage.setItem('token', res.data.token)
+  //     localStorage.setItem('role', res.data.role)
+  //     localStorage.setItem('username', res.data.username) // save username
+  //     alert(res.data.message)
+  //     navigate(res.data.role === 'admin' ? '/admin-dashboard' : '/home')
+  //   } catch (err) {
+  //     alert(err.response?.data?.error || 'Login failed!')
+  //   }
+  // }
 
   // Register handlers
   const handleRegisterChange = (e) =>
