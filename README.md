@@ -30,12 +30,14 @@ A React-based frontend application for a college student feedback system. This p
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd sfs-frontend
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
@@ -45,6 +47,7 @@ A React-based frontend application for a college student feedback system. This p
 ## How to Run
 
 1. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -66,7 +69,6 @@ sfs-frontend/
 │   │   └── react.svg
 │   ├── components/
 │   │   ├── CourseCard.jsx
-│   │   ├── FeedbackModal.jsx
 │   │   └── Navbar.jsx
 │   ├── pages/
 │   │   ├── AdminAssignCourses.jsx
@@ -109,7 +111,6 @@ sfs-frontend/
 ## License
 
 This project is licensed under the MIT License.
-
 
 Admin Credentials:
 omkar@gmail.com
