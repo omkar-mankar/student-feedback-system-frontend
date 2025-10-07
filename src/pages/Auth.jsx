@@ -36,21 +36,6 @@ function Auth() {
     }
   }
 
-  // const handleLoginSubmit = async (e) => {
-  //   e.preventDefault()
-  //   try {
-  //     const res = await axios.post('http://127.0.0.1:5000/login', loginForm)
-  //     localStorage.setItem('token', res.data.token)
-  //     localStorage.setItem('role', res.data.role)
-  //     localStorage.setItem('username', res.data.username) // save username
-  //     alert(res.data.message)
-  //     navigate(res.data.role === 'admin' ? '/admin-dashboard' : '/home')
-  //   } catch (err) {
-  //     alert(err.response?.data?.error || 'Login failed!')
-  //   }
-  // }
-
-  // Register handlers
   const handleRegisterChange = (e) =>
     setRegisterForm({ ...registerForm, [e.target.name]: e.target.value })
 

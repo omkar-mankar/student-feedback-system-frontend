@@ -364,33 +364,6 @@ function AdminDashboard() {
   </div>
 )}
 
-
-      {/* Feedback Management
-      {selectedTab === 'feedback' && (
-        <div className='feedback-management'>
-          <div className='feedback-center-panel'>
-            <h3>All Feedbacks</h3>
-            {feedbacks.length > 0 ? (
-              <div className='feedback-list'>
-                {feedbacks.map((fb) => (
-                  <div
-                    key={fb._id}
-                    className='feedback-item'
-                  >
-                    <strong>
-                      {fb.student_name} → {fb.course_name} ({fb.semester})
-                    </strong>
-                    <p>{fb.comment}</p>
-                    <small>Rating: {fb.rating || 'N/A'}</small>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p>No feedback available yet.</p>
-            )}
-          </div>
-        </div>
-      )} */}
     </div>
   )
 }
